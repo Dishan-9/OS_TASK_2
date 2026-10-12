@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dining Philosophers Monitor Simulation</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0b132b; color: #fff; padding: 20px; }
+        h1 { text-align: center; color: #48cae4; }
+        .controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        button { padding: 8px 16px; background: #48cae4; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; color: #0b132b; }
+        .table-view { display: flex; justify-content: space-around; margin: 30px 0; }
+        .phil-card { background: #1c2541; padding: 20px; border-radius: 8px; width: 180px; text-align: center; border: 2px solid #3a506b; }
+        .state-THINKING { border-color: #6c757d; color: #ced4da; }
+        .state-HUNGRY { border-color: #ffb703; color: #ffb703; }
+        .state-EATING { border-color: #52b788; color: #52b788; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #3a506b; padding: 8px; text-align: left; }
+        th { background: #1c2541; }
+    </style>
+</head>
+<body>
+    <h1>Dining Philosophers (4 Philosophers - Monitor)</h1>
+    <div class="controls">
+        <button onclick="play()">Play</button>
+        <button onclick="pause()">Pause</button>
+        <button onclick="reset()">Reset</button>
+    </div>
+
+    <div class="table-view">
+        <div id="p0" class="phil-card state-THINKING"><h3>P0</h3><div class="status">THINKING</div></div>
+        <div id="p1" class="phil-card state-THINKING"><h3>P1</h3><div class="status">THINKING</div></div>
+        <div id="p2" class="phil-card state-THINKING"><h3>P2</h3><div class="status">THINKING</div></div>
+        <div id="p3" class="phil-card state-THINKING"><h3>P3</h3><div class="status">THINKING</div></div>
+    </div>
+
+    <table>
+        <thead>
+            <tr><th>Time (s)</th><th>Philosopher</th><th>State</th><th>Action Details</th></tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+    </table>
+
+    <script>
+        const events = [{"time": 0.17, "philosopher": 2, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 0.17, "philosopher": 2, "state": "EATING", "details": "Acquired forks 2 and 3"}, {"time": 0.23, "philosopher": 1, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 0.25, "philosopher": 3, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 0.26, "philosopher": 0, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 0.26, "philosopher": 0, "state": "EATING", "details": "Acquired forks 0 and 1"}, {"time": 0.46, "philosopher": 0, "state": "THINKING", "details": "Released forks 0 and 1"}, {"time": 0.54, "philosopher": 2, "state": "THINKING", "details": "Released forks 2 and 3"}, {"time": 0.54, "philosopher": 1, "state": "EATING", "details": "Acquired forks 1 and 2"}, {"time": 0.54, "philosopher": 3, "state": "EATING", "details": "Acquired forks 3 and 0"}, {"time": 0.58, "philosopher": 0, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 0.74, "philosopher": 2, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 0.78, "philosopher": 3, "state": "THINKING", "details": "Released forks 3 and 0"}, {"time": 0.92, "philosopher": 1, "state": "THINKING", "details": "Released forks 1 and 2"}, {"time": 0.92, "philosopher": 0, "state": "EATING", "details": "Acquired forks 0 and 1"}, {"time": 0.92, "philosopher": 2, "state": "EATING", "details": "Acquired forks 2 and 3"}, {"time": 0.96, "philosopher": 3, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 1.03, "philosopher": 1, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 1.19, "philosopher": 0, "state": "THINKING", "details": "Released forks 0 and 1"}, {"time": 1.25, "philosopher": 2, "state": "THINKING", "details": "Released forks 2 and 3"}, {"time": 1.25, "philosopher": 1, "state": "EATING", "details": "Acquired forks 1 and 2"}, {"time": 1.25, "philosopher": 3, "state": "EATING", "details": "Acquired forks 3 and 0"}, {"time": 1.44, "philosopher": 2, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 1.47, "philosopher": 3, "state": "THINKING", "details": "Released forks 3 and 0"}, {"time": 1.47, "philosopher": 1, "state": "THINKING", "details": "Released forks 1 and 2"}, {"time": 1.47, "philosopher": 2, "state": "EATING", "details": "Acquired forks 2 and 3"}, {"time": 1.48, "philosopher": 0, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 1.48, "philosopher": 0, "state": "EATING", "details": "Acquired forks 0 and 1"}, {"time": 1.61, "philosopher": 1, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 1.74, "philosopher": 3, "state": "HUNGRY", "details": "Waiting for forks"}, {"time": 1.83, "philosopher": 0, "state": "THINKING", "details": "Released forks 0 and 1"}, {"time": 1.86, "philosopher": 2, "state": "THINKING", "details": "Released forks 2 and 3"}, {"time": 1.86, "philosopher": 1, "state": "EATING", "details": "Acquired forks 1 and 2"}, {"time": 1.86, "philosopher": 3, "state": "EATING", "details": "Acquired forks 3 and 0"}, {"time": 2.11, "philosopher": 3, "state": "THINKING", "details": "Released forks 3 and 0"}, {"time": 2.11, "philosopher": 1, "state": "THINKING", "details": "Released forks 1 and 2"}];
+        let currentIndex = 0;
+        let timer = null;
+
+        function updateCard(philId, state) {
+            const card = document.getElementById("p" + philId);
+            card.className = "phil-card state-" + state;
+            card.querySelector(".status").innerText = state;
+        }
+
+        function step() {
+            if (currentIndex < events.length) {
+                const ev = events[currentIndex];
+                updateCard(ev.philosopher, ev.state);
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${ev.time}</td><td>P${ev.philosopher}</td><td>${ev.state}</td><td>${ev.details}</td>`;
+                document.getElementById("logBody").prepend(tr);
+                currentIndex++;
+            } else {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        function play() {
+            if (!timer) timer = setInterval(step, 350);
+        }
+
+        function pause() {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        function reset() {
+            pause();
+            currentIndex = 0;
+            document.getElementById("logBody").innerHTML = "";
+            for (let i = 0; i < 4; i++) updateCard(i, "THINKING");
+        }
+
+        play();
+    </script>
+</body>
+</html>

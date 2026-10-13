@@ -6,28 +6,30 @@
 ---
 
 ## 1. Initial prompt
-I uploaded the assignment PDF and asked Gemini to identify the core code requirements. I then asked for Python implementations of the synchronization problems (Readers-Writers using semaphores and Dining Philosophers using monitors) along with the program-generated HTML simulation files based on execution logs[cite: 1, 2].
+I uploaded the assignment PDF and asked Gemini to extract the core concurrency and submission requirements[cite: 1, 2]. I initially requested Python implementations for Readers-Writers using semaphores and Dining Philosophers using monitors, along with automated, execution-driven HTML simulation files[cite: 1, 2].
 
 ---
 
 ## 2. Important follow-up prompts
-1. **Code Complexity Check:** Asked whether the generated synchronization code was too complicated or if it appropriately followed standard operating system concepts[cite: 1, 2].
-2. **References Request:** Asked for 2 to 3 formal references for the written report in strict IEEE citation format, covering textbooks, Python documentation, and AI usage[cite: 4].
-3. **Repository Audit:** Provided screenshots of my workspace directory and asked what required files and folders were missing according to the assignment checklist[cite: 3, 4, 8].
-4. **Deliverables Generation:** Asked for complete templates for `ai_prompts/prompts.md`, the `report/` draft, and guidance on what screenshots to include in `screenshots/`[cite: 3, 4].
-5. **Code Alignment Verification:** Asked to verify whether the recorded prompt log accurately reflected the synchronization primitives and methods used in the actual Python scripts[cite: 1, 2].
+1. **Code Complexity Assessment:** Asked whether the synchronization implementations were minimal and adhere directly to standard operating system primitives[cite: 1, 2].
+2. **Academic References:** Requested 3 core references formatted in strict IEEE standard covering OS theory, Python language primitives, and generative AI disclosure[cite: 4].
+3. **Repository Gap Analysis:** Provided screenshots of my working folder structure to identify missing deliverables against the recommended directory layout[cite: 3, 4, 8].
+4. **Implementation Completion:** Prompted for the remaining two implementations—Readers-Writers using monitors (writer-preference) and Dining Philosophers using semaphores (arbiter/room capacity)—to fulfill all four required programs[cite: 1, 4].
+5. **Deadlock Rule Verification:** Verified that both Dining Philosophers solutions correctly break the Coffman deadlock conditions (Circular Wait via room capacity, and Hold-and-Wait via atomic monitor tests)[cite: 1, 2].
+6. **Documentation & Deliverables Scaffolding:** Requested structured templates for `README.md`, `Assignment_Report.md`, and screenshot evidence specifications[cite: 3, 4].
 
 ---
 
 ## 3. What I changed or did myself
-* Created the project directory structure and separated files according to the assignment requirements[cite: 3].
-* Ran the Python scripts locally using the terminal to verify thread execution and ensure that `.html` simulation files were generated cleanly[cite: 2, 4].
-* Captured screenshots of the terminal runs and browser simulation interfaces for the `screenshots/` directory[cite: 4].
-* Formatted the final report, added my own student details, and prepared the viva explanation points[cite: 3, 4, 5].
+* Organized the repository into clean subdirectories (`readers_writers/`, `dining_philosophers/`, `generated_html/`, `ai_prompts/`, `references/`, `report/`, `screenshots/`)[cite: 3].
+* Executed all four Python programs locally to verify thread synchronization, race-condition absence, and HTML file generation[cite: 2, 4].
+* Verified in-browser playback (Play, Pause, Reset) and fork allocation badge updates for the HTML simulations[cite: 2].
+* Took terminal execution screenshots and browser playback captures for the `screenshots/` folder[cite: 4].
+* Finalized the project report, verified mathematical and deadlock invariants, and prepared viva defense explanations[cite: 4, 5].
 
 ---
 
 ## 4. Reflection: limitations and improvements I found
-* **Visualization Timing:** The simulation replay currently steps through events using a fixed interval rather than true proportional time gaps; scaling the playback delay using the recorded event timestamps would make it more realistic[cite: 2].
-* **Writer Starvation:** The Readers-Writers semaphore implementation follows reader-preference, meaning continuous reader arrivals can starve writers[cite: 1, 5]. A fairer queue or monitor-based writer-preference approach can prevent this[cite: 1, 5].
-* **Dining Philosophers Deadlock:** Without proper state testing or asymmetric fork acquisition, four philosophers simultaneously taking their left fork will deadlock[cite: 1, 5]. The monitor implementation resolves this by checking both neighbors' states before granting access[cite: 1, 5].
+* **Deadlock Handling:** In the semaphore-based Dining Philosophers solution, an arbiter semaphore (`room = 3`) effectively prevents Circular Wait deadlock, while the monitor solution prevents Hold-and-Wait deadlock through atomic two-fork acquisition inside `test()`[cite: 1, 2].
+* **Fairness & Starvation:** The semaphore Readers-Writers uses readers-preference where consecutive readers can starve writers[cite: 1, 5]; the monitor implementation resolves this by prioritizing waiting writers[cite: 1].
+* **Simulation Replay Timing:** The current browser replay uses a fixed interval stepping mechanism; a future optimization would scale playback dynamically based on the captured timestamps to replicate real thread preemption timings[cite: 2].

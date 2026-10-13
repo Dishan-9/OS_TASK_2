@@ -1,5 +1,0 @@
-[1] A. Silberschatz, P. B. Galvin, and G. Gagne, Operating System Concepts, 10th ed. Hoboken, NJ, USA: John Wiley & Sons, 2018.
-
-[2] Python Software Foundation, “threading — Thread-based parallelism,” Python 3 Documentation. [Online]. Available: https://docs.python.org/3/library/threading.html
-
-[3] Google, “Gemini,” AI assistant. [Online]. Available: https://gemini.google.com
